@@ -55,6 +55,17 @@ function createUser()
     fi
 }
 
+function installMediaWiki()
+{
+	if [ ! -d "/var/www/html/wiki" ]; then
+	pushd /tmp
+	unzip mediawiki-1.38.2.zip
+	sudo rm -fr mediawiki-1.38.2.zip
+	mv mediawiki-1.38.2 /var/www/html/wiki
+	popd
+	fi
+}
+
 function configureSelfSignedCertificate()
 {
     mkdir -p /tmp/certs
@@ -218,7 +229,9 @@ function dockerParams()
     --user $(id -u):$(id -g)
     --workdir="/home/$USER"
     -p 443:443
+    -v /home/$USER:/home/$USER
     -v /datadisk/nextgen/www/:/var/www/html
+    -v /datadisk/nextgen/www-db/:/var/www/data
     -v $script_dir/tmp/run.sh:/tmp/run.sh
     -v $script_dir/tmp/etc.passwd:/etc/passwd
     -v $script_dir/tmp/etc.group:/etc/group

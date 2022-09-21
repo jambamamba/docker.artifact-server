@@ -95,6 +95,13 @@ function main()
 \$@" >> $workdir/run.sh
    chmod +x $workdir/run.sh
 
+   mkdir -p tmp
+   if [ ! -f mediawiki-1.38.2.zip ]; then
+      pushd tmp/
+      wget https://releases.wikimedia.org/mediawiki/1.38/mediawiki-1.38.2.zip
+      popd
+   fi
+   
    #docker build -t <hub-user>/<repo-name>[:<tag>] .
    docker build \
       --no-cache \

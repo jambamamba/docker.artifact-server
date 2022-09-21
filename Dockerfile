@@ -27,6 +27,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	
 COPY in/.ssh /home/dev/
 COPY in/etc.nginx.sites-available.default /tmp/
+COPY tmp/mediawiki-1.38.2.zip /tmp/
 
 COPY tmp/run.sh /tmp/
 RUN /tmp/run.sh installNginx

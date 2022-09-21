@@ -65,6 +65,9 @@ function main()
    else
 	local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 	
+	sudo mkdir -p /datadisk/nextgen/www
+	sudo mkdir -p /datadisk/nextgen/www-db
+	
 	sudo rm -fr /datadisk/nextgen/www
 	sudo mkdir -p /datadisk/nextgen/
 	pushd /datadisk/nextgen/
@@ -83,6 +86,7 @@ function main()
 
 	cp -f helper-functions.sh $workdir/run.sh
 	echo "configureSshServer" >> $workdir/run.sh
+	echo "installMediaWiki" >> $workdir/run.sh
 	echo "sudo service php8.1-fpm start" >> $workdir/run.sh
 	echo "sudo service nginx start" >> $workdir/run.sh
 	local interactive_terminal="yes"
