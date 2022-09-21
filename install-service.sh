@@ -11,7 +11,7 @@ After=multi-user.target
 
 [Service]
 ExecStart=/bin/bash -c '/datadisk/docker.$SERVICE/run-docker.sh >> /tmp/$SERVICE.log 2>&1'
-ExecStop=/bin/bash -c '/datadisk/docker.$SERVICE/run-docker.sh stop >> /tmp/$SERVICE.log 2>&1'
+ExecStop=/bin/bash -c '/datadisk/docker.$SERVICE/run-docker.sh stop=true >> /tmp/$SERVICE.log 2>&1'
 
 [Install]
 WantedBy=multi-user.target

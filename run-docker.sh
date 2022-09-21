@@ -44,6 +44,8 @@ function replaceSlashWithHyphen()
 function main()
 {
    local build=""
+   local interactive=""
+   local stop="no"
    parseArgs $@
    installDocker
    loadDockerImage
@@ -56,13 +58,17 @@ function main()
       containerid=$(docker ps -a | grep $dockerimage | head -n1 | cut -d " " -f1)
    fi
 
-   if [ "$containerid" != "" ] ; then
-      local container_id=$(docker ps -a -q -n 1)
+   if [ "$containerid" != "" ]; then
+      #local container_id=$(docker ps -a -q -n 1)
       # echo "Container already running! container id: $container_id. Do you want to stop this container? <yes|no>"
       # read yesno
       # if [ "$yesno" == "yes" ]; then docker stop $container_id; return 0; fi
-      docker exec -it $containerid /bin/bash
-   else
+      if [ "$stop" == "true" ] || [ "$stop" == "yes" ]; then
+         docker stop $containerid
+      else
+         docker exec -it $containerid /bin/bash
+      fi
+   elif [ "$stop" != "yes" ] && [ "$stop" != "true" ]; then
 	local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 	
 	sudo mkdir -p /datadisk/nextgen/www
@@ -89,8 +95,7 @@ function main()
 	echo "installMediaWiki" >> $workdir/run.sh
 	echo "sudo service php8.1-fpm start" >> $workdir/run.sh
 	echo "sudo service nginx start" >> $workdir/run.sh
-	local interactive_terminal="yes"
-	if [ "$interactive_terminal" != "yes" ]; then
+	if [ "$interactive" != "yes" ]; then
 		echo "sleep infinity" >> $workdir/run.sh
 	fi
 
@@ -102,7 +107,7 @@ function main()
 
       xhost + && true
       local container_name="jambamamba-artifact-server"
-      local params=$(dockerParams dockerimage="$dockerimage" container_name="$container_name" interactive_terminal="$interactive_terminal")
+      local params=$(dockerParams dockerimage="$dockerimage" container_name="$container_name" interactive_terminal="$interactive")
       time docker run $params bash -c "$cmd_run_in_docker"
    fi
 }
