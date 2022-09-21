@@ -92,7 +92,6 @@ function main()
 	#         sudo cp -r /etc/sudoers.d $workdir/etc.sudoers.d
 
 	cp -f $script_dir/helper-functions.sh $workdir/run.sh
-	echo "configureSshServer" >> $workdir/run.sh
 	echo "installMediaWiki" >> $workdir/run.sh
 	echo "sudo service php8.1-fpm start" >> $workdir/run.sh
 	echo "sudo service nginx start" >> $workdir/run.sh
