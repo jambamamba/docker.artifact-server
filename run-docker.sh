@@ -8,7 +8,7 @@ set -xe
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source $script_dir/version.sh
-#source helper-functions.sh
+source $script_dir/helper-functions.sh
 
 function installDocker()
 {
