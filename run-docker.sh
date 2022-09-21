@@ -6,8 +6,9 @@ set -xe
 #and run command 'xhost +localhost' on your macos before running this script
 #https://gist.github.com/cschiewek/246a244ba23da8b9f0e7b11a68bf3285
 
-source "version.sh"
-source helper-functions.sh
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source $script_dir/version.sh
+#source helper-functions.sh
 
 function installDocker()
 {
@@ -70,28 +71,27 @@ function main()
       fi
    elif [ "$stop" != "yes" ] && [ "$stop" != "true" ]; then
 	local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-	local sudo=""
 	
-	$sudo mkdir -p /datadisk/nextgen/www
-	$sudo mkdir -p /datadisk/nextgen/www-db
+	sudo mkdir -p /datadisk/nextgen/www
+	sudo mkdir -p /datadisk/nextgen/www-db
 	
-	$sudo rm -fr /datadisk/nextgen/www
-	$sudo mkdir -p /datadisk/nextgen/
+	sudo rm -fr /datadisk/nextgen/www
+	sudo mkdir -p /datadisk/nextgen/
 	pushd /datadisk/nextgen/
-	$sudo ln -sf $script_dir/in/www .
+	sudo ln -sf $script_dir/in/www .
 	popd
 
 	local workdir="$script_dir/tmp"
 	mkdir -p $workdir
 	rm -fr $workdir/*
 
-	$sudo cp /etc/passwd $workdir/etc.passwd
-	$sudo cp /etc/group $workdir/etc.group
-	$sudo cp /etc/shadow $workdir/etc.shadow
-	$sudo cp /etc/sudoers $workdir/etc.sudoers
-	#         $sudo cp -r /etc/sudoers.d $workdir/etc.sudoers.d
+	sudo cp /etc/passwd $workdir/etc.passwd
+	sudo cp /etc/group $workdir/etc.group
+	sudo cp /etc/shadow $workdir/etc.shadow
+	sudo cp /etc/sudoers $workdir/etc.sudoers
+	#         sudo cp -r /etc/sudoers.d $workdir/etc.sudoers.d
 
-	cp -f helper-functions.sh $workdir/run.sh
+	cp -f $script_dir/helper-functions.sh $workdir/run.sh
 	echo "configureSshServer" >> $workdir/run.sh
 	echo "installMediaWiki" >> $workdir/run.sh
 	echo "sudo service php8.1-fpm start" >> $workdir/run.sh
