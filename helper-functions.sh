@@ -62,6 +62,9 @@ function installMediaWiki()
 	unzip mediawiki-1.38.2.zip
 	sudo rm -fr mediawiki-1.38.2.zip
 	mv mediawiki-1.38.2 /var/www/html/wiki
+	mkdir -p /var/www/html/wiki/extensions/VideoPlayer
+	mv VideoPlayer.php /var/www/html/wiki/extensions/VideoPlayer/VideoPlayer.php
+	mv LocalSettings.php /datadisk/nextgen/www/wiki/LocalSettings.php
 	popd
 	fi
 }
