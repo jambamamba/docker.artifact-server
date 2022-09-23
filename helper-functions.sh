@@ -102,6 +102,13 @@ function installNginx()
 		php8.1-xml \
 		php8.1-zip \
 		php-pear \
+		
+	cp /etc/php/8.1/fpm/php.ini /etc/php/8.1/fpm/php.ini.backup
+	cp /etc/php/8.1/fpm/php.ini /tmp/php.ini
+	cat /tmp/php.ini | sed -r "s/upload_max_filesize = .*/upload_max_filesize = 100G/g" > /tmp/php.ini.1
+	cat /tmp/php.ini.1 | sed -r "s/post_max_size = .*/post_max_size = 100G/g" > /tmp/php.ini.2
+	mv /tmp/php.ini.2 /etc/php/8.1/fpm/php.ini
+	rm /tmp/php.ini*
 
 	configureSelfSignedCertificate
 	mv -f /tmp/certs/server.crt /etc/ssl/certs/ssl-cert-snakeoil.pem;
