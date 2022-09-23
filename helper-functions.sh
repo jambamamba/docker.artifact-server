@@ -212,11 +212,11 @@ function dockerParams()
     local mem_gb=$(free -h | grep Mem | awk '{print $2}')
     local mem_gb=${mem_gb%Gi}
     local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
+    
     if [ "$USER" == "null" ] || [ "$USER" == "" ]; then
         USER="dev"
     fi
-
+    
     local params=(
     --rm 
     -e DOCKERUSER=$USER 
@@ -232,6 +232,7 @@ function dockerParams()
     -v /home/$USER:/home/$USER
     -v /datadisk/nextgen/www/:/var/www/html
     -v /datadisk/nextgen/www-db/:/var/www/data
+    -v /datadisk/nextgen/out:/var/www/html/artifacts
     -v $script_dir/tmp/run.sh:/tmp/run.sh
     -v $script_dir/tmp/etc.passwd:/etc/passwd
     -v $script_dir/tmp/etc.group:/etc/group
