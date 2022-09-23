@@ -117,6 +117,9 @@ function installNginx()
 	mv -f /tmp/certs/server.crt /etc/ssl/certs/ssl-cert-snakeoil.pem;
 	mv -f /tmp/certs/server.key /etc/ssl/private/ssl-cert-snakeoil.key;
 	cp /tmp/etc.nginx.sites-available.default /etc/nginx/sites-available/default
+	
+	cat /etc/nginx/nginx.conf | sed -r "s/sendfile on;/sendfile on;\n\tclient_max_body_size 100G;/g" > /tmp/nginx.conf
+	mv /tmp/nginx.conf /etc/nginx/nginx.conf
 
 # /usr/sbin/nginx
 # /var/log/nginx/error.log
