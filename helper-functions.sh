@@ -110,7 +110,11 @@ function installNginx()
 	cp /etc/php/8.1/fpm/php.ini /tmp/php.ini
 	cat /tmp/php.ini | sed -r "s/upload_max_filesize = .*/upload_max_filesize = 100G/g" > /tmp/php.ini.1
 	cat /tmp/php.ini.1 | sed -r "s/post_max_size = .*/post_max_size = 100G/g" > /tmp/php.ini.2
-	mv /tmp/php.ini.2 /etc/php/8.1/fpm/php.ini
+	cat /tmp/php.ini.2 | sed -r "s/max_execution_time = .*/max_execution_time = 0/g" > /tmp/php.ini.3
+    cat /tmp/php.ini.3 | sed -r "s/memory_limit = .*/memory_limit = 1G/g" > /tmp/php.ini.4
+    memory_limit =
+    
+	mv /tmp/php.ini.4 /etc/php/8.1/fpm/php.ini
 	rm /tmp/php.ini*
 
     cat /etc/nginx/nginx.conf | sed -r "s/# Basic Settings/# Basic Settings\n\tclient_max_body_size 100G;/" > /tmp/nginx.conf
