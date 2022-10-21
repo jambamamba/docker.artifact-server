@@ -62,6 +62,9 @@ function installMediaWiki()
 	unzip mediawiki-1.38.2.zip
 	sudo rm -fr mediawiki-1.38.2.zip
 	mv mediawiki-1.38.2 /var/www/html/wiki
+    cp /var/www/html/wiki/LocalSettings.php /var/www/html/wiki/LocalSettings.php.backup
+    #increase max file limit to 100GB
+    echo "\$wgMaxUploadSize = 10695475200;" >> /var/www/html/wiki/LocalSettings.php
 	popd
 	fi
 }
@@ -109,6 +112,9 @@ function installNginx()
 	cat /tmp/php.ini.1 | sed -r "s/post_max_size = .*/post_max_size = 100G/g" > /tmp/php.ini.2
 	mv /tmp/php.ini.2 /etc/php/8.1/fpm/php.ini
 	rm /tmp/php.ini*
+
+    cat /etc/nginx/nginx.conf | sed -r "s/# Basic Settings/# Basic Settings\n\tclient_max_body_size 100G;/" > /tmp/nginx.conf
+    mv /tmp/nginx.conf /etc/nginx/nginx.conf
 
 	configureSelfSignedCertificate
 	mv -f /tmp/certs/server.crt /etc/ssl/certs/ssl-cert-snakeoil.pem;

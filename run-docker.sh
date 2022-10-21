@@ -73,7 +73,6 @@ function main()
 	local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 	
 	sudo rm -fr /datadisk/nextgen/www
-	sudo mkdir -p /datadisk/nextgen/www
 	sudo mkdir -p /datadisk/nextgen/www-db
 	
 	pushd /datadisk/nextgen/
