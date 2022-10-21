@@ -62,9 +62,9 @@ function installMediaWiki()
 	unzip mediawiki-1.38.2.zip
 	sudo rm -fr mediawiki-1.38.2.zip
 	mv mediawiki-1.38.2 /var/www/html/wiki
-    cp /var/www/html/wiki/LocalSettings.php /var/www/html/wiki/LocalSettings.php.backup
-    #increase max file limit to 100GB
-    echo "\$wgMaxUploadSize = 10695475200;" >> /var/www/html/wiki/LocalSettings.php
+    mkdir -p /var/www/html/wiki/extensions/VideoPlayer
+	mv VideoPlayer.php /var/www/html/wiki/extensions/VideoPlayer/VideoPlayer.php
+	mv LocalSettings.php /datadisk/nextgen/www/wiki/LocalSettings.php
 	popd
 	fi
 }
@@ -120,6 +120,9 @@ function installNginx()
 	mv -f /tmp/certs/server.crt /etc/ssl/certs/ssl-cert-snakeoil.pem;
 	mv -f /tmp/certs/server.key /etc/ssl/private/ssl-cert-snakeoil.key;
 	cp /tmp/etc.nginx.sites-available.default /etc/nginx/sites-available/default
+	
+	cat /etc/nginx/nginx.conf | sed -r "s/sendfile on;/sendfile on;\n\tclient_max_body_size 100G;/g" > /tmp/nginx.conf
+	mv /tmp/nginx.conf /etc/nginx/nginx.conf
 
 # /usr/sbin/nginx
 # /var/log/nginx/error.log
