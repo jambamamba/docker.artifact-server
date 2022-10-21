@@ -1,5 +1,5 @@
 #!/bin/bash -xe
 set -xe
 
-dockertag="v1"
+dockertag="v2"
 
