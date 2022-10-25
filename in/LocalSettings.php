@@ -175,4 +175,7 @@ $wgFileExtensions = array( 'png', 'gif', 'jpg', 'jpeg', 'doc',
  'tar', 'xz', 'gz', 'zip'
 );
 
-$wgMaxUploadSize = 10695475200;
+$wgMaxUploadSize = 107374182400; #100 GB
+$wgCookieExpiration = 86400; #1 Day
+$wgExtendedLoginCookieExpiration = null;
+
