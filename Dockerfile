@@ -30,13 +30,13 @@ COPY in/etc.nginx.sites-available.default /tmp/
 COPY tmp/mediawiki-1.38.2.zip /tmp/
 COPY in/LocalSettings.php /tmp/
 COPY in/VideoPlayer.php /tmp/
+COPY in/delete-old-files.cron /etc/cron.d/
+COPY in/delete-old-files.sh /usr/bin/
 
 COPY tmp/run.sh /tmp/
 RUN /tmp/run.sh installNginx
 RUN /tmp/run.sh installPonysay
-RUN /tmp/run.sh createUser user="dev" sudo=""
 RUN /tmp/run.sh installSudo
-RUN /tmp/run.sh noPassword user="dev" sudo=""
 
 RUN rm -f /tmp/run.sh
 USER dev

@@ -42,16 +42,11 @@ function saveImageAsTarGz()
    local artifacts_dir=""
    parseArgs $@
 
-   mkdir -p ../out
-   rm -fr ../out/steno-docker-image.tar.gz
+   mkdir -p out
+   rm -fr out/*
    sudo apt install -y pv
-   docker save $dockerimage | pigz --stdout --best > ../out/$dockerimage.tar.gz
-   #docker load < "../out/steno-docker-image.tar.gz"
-   echo "image is ready: ../out/$dockerimage.tar.gz"
-
-   if [ -d "$artifacts_dir" ]; then
-      cp ../out/$dockerimage.tar.gz $artifacts_dir/
-   fi
+   docker save $dockerimage | pigz --stdout --best > out/$dockerimage.tar.gz
+   echo "image is ready: $(pwd)/out/$dockerimage.tar.gz"
 }
 
 function checkDockerIsInstalled()
@@ -75,7 +70,6 @@ function checkDockerIsInstalled()
 function main()
 {
    export DOCKER_HOST=""
-   local artifacts_dir=""
    parseArgs $@
 
    checkDockerIsInstalled
@@ -110,7 +104,7 @@ function main()
       --memory="8g" --memory-swap="-1" \
       --progress=plain -t $dockerimage .
 
-   saveImageAsTarGz dockerimage="$dockerimage" artifacts_dir="$artifacts_dir"
+   saveImageAsTarGz dockerimage="$dockerimage"
    rm -fr $workdir
 }
 

@@ -55,12 +55,12 @@ function createUser()
     fi
 }
 
-function installMediaWiki()
+function configureMediaWiki()
 {
 	if [ ! -d "/var/www/html/wiki" ]; then
 	pushd /tmp
 	unzip mediawiki-1.38.2.zip
-	sudo rm -fr mediawiki-1.38.2.zip
+	rm -fr mediawiki-1.38.2.zip
 	mv mediawiki-1.38.2 /var/www/html/wiki
     mkdir -p /var/www/html/wiki/extensions/VideoPlayer
 	mv VideoPlayer.php /var/www/html/wiki/extensions/VideoPlayer/VideoPlayer.php
@@ -112,7 +112,6 @@ function installNginx()
 	cat /tmp/php.ini.1 | sed -r "s/post_max_size = .*/post_max_size = 100G/g" > /tmp/php.ini.2
 	cat /tmp/php.ini.2 | sed -r "s/max_execution_time = .*/max_execution_time = 0/g" > /tmp/php.ini.3
     cat /tmp/php.ini.3 | sed -r "s/memory_limit = .*/memory_limit = 1G/g" > /tmp/php.ini.4
-    memory_limit =
     
 	mv /tmp/php.ini.4 /etc/php/8.1/fpm/php.ini
 	rm /tmp/php.ini*
@@ -125,9 +124,6 @@ function installNginx()
 	mv -f /tmp/certs/server.key /etc/ssl/private/ssl-cert-snakeoil.key;
 	cp /tmp/etc.nginx.sites-available.default /etc/nginx/sites-available/default
 	
-	cat /etc/nginx/nginx.conf | sed -r "s/sendfile on;/sendfile on;\n\tclient_max_body_size 100G;/g" > /tmp/nginx.conf
-	mv /tmp/nginx.conf /etc/nginx/nginx.conf
-
 # /usr/sbin/nginx
 # /var/log/nginx/error.log
 # sudo vi /etc/nginx/sites-available/default # root /var/www/html
@@ -207,6 +203,30 @@ function getGitEmail()
     git_email="${git_email// /_}" #replace space with _
 }
 
+function copyUsersFromHostToContainer()
+{
+   local workdir=""
+   parseArgs $@
+
+   mkdir -p backup/
+   sudo cp /etc/passwd backup/
+   sudo cp /etc/group backup/ 
+   sudo cp /etc/shadow backup/
+   sudo cp /etc/sudoers backup/
+   sudo passwd -d $(whoami)
+
+	sudo cp /etc/passwd $workdir/etc.passwd
+	sudo cp /etc/group $workdir/etc.group
+	sudo cp /etc/shadow $workdir/etc.shadow
+	sudo cp /etc/sudoers $workdir/etc.sudoers
+
+   sudo cp -f backup/passwd /etc/
+   sudo cp -f backup/group /etc/ 
+   sudo cp -f backup/shadow /etc/
+   sudo cp -f backup/sudoers /etc/
+   sudo rm -fr backup
+}
+
 function dockerParams()
 {
     local dockerimage
@@ -215,20 +235,15 @@ function dockerParams()
     parseArgs $@
 
     if [ "$container_name" == "" ]; then 
-        local container_name="jambamamba"
+        local container_name="jambamamba-artifact-server"
     fi
 
-    if [ "$interactive_terminal" == "yes" ]; then 
+    if [[] "$interactive_terminal" == "true" || "$interactive_terminal" == "yes" ]]; then 
         interactive_terminal="-it"; 
     else 
         interactive_terminal=""; 
     fi
 
-#    local git_user=""
-#    getGitUser git_user=""
-#    local git_email=""
-#    getGitEmail git_email=""
-    
     local mem_gb=$(free -h | grep Mem | awk '{print $2}')
     local mem_gb=${mem_gb%Gi}
     local script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -257,6 +272,7 @@ function dockerParams()
     -v $script_dir/tmp/etc.passwd:/etc/passwd
     -v $script_dir/tmp/etc.group:/etc/group
     -v $script_dir/tmp/etc.shadow:/etc/shadow
+    -v $script_dir/tmp/etc.sudoers:/etc/sudoers
     -v /tmp/.X11-unix:/tmp/.X11-unix
     -v $HOME/.Xauthority:/home/dev/.Xauthority
     -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
